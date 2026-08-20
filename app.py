@@ -322,7 +322,7 @@ recta_html = f"""
 .recta-fdp {{
     position: relative;
     width: 92%;
-    height: 90px;
+    height: 105px;
     margin: 30px auto 5px auto;
 }}
 
@@ -336,11 +336,12 @@ recta_html = f"""
     border-radius: 3px;
 }}
 
-.recta-fdp .marca-fdp {{
+/* Marcas de 0 y 1 */
+.recta-fdp .marca-extremo {{
     position: absolute;
-    top: 17px;
+    top: 16px;
     width: 3px;
-    height: 22px;
+    height: 24px;
     background: currentColor;
 }}
 
@@ -352,6 +353,49 @@ recta_html = f"""
     right: 0;
 }}
 
+/* Referencias fijas */
+.recta-fdp .marca-referencia {{
+    position: absolute;
+    top: 20px;
+    width: 2px;
+    height: 16px;
+    background: #888;
+    transform: translateX(-50%);
+}}
+
+.recta-fdp .ref25 {{
+    left: 25%;
+}}
+
+.recta-fdp .ref50 {{
+    left: 50%;
+}}
+
+.recta-fdp .ref75 {{
+    left: 75%;
+}}
+
+.recta-fdp .texto-referencia {{
+    position: absolute;
+    top: 49px;
+    transform: translateX(-50%);
+    color: #999;
+    font-size: 0.9rem;
+}}
+
+.recta-fdp .texto25 {{
+    left: 25%;
+}}
+
+.recta-fdp .texto50 {{
+    left: 50%;
+}}
+
+.recta-fdp .texto75 {{
+    left: 75%;
+}}
+
+/* Punto móvil */
 .recta-fdp .punto-fdp {{
     position: absolute;
     top: 17px;
@@ -361,41 +405,57 @@ recta_html = f"""
     border-radius: 50%;
     background: #38d45a;
     transform: translateX(-50%);
+    z-index: 2;
 }}
 
 .recta-fdp .etiqueta-fdp {{
     position: absolute;
-    top: 51px;
+    top: 76px;
     left: {posicion}%;
     transform: translateX(-50%);
     font-weight: 700;
     color: #38d45a;
 }}
 
+/* Extremos */
 .recta-fdp .cero-fdp {{
     position: absolute;
-    top: 50px;
+    top: 49px;
     left: 0;
 }}
 
 .recta-fdp .uno-fdp {{
     position: absolute;
-    top: 50px;
+    top: 49px;
     right: 0;
 }}
 </style>
 
 <div class="recta-fdp">
+
     <div class="linea-fdp"></div>
 
-    <div class="marca-fdp marca-cero"></div>
-    <div class="marca-fdp marca-uno"></div>
+    <!-- extremos -->
+    <div class="marca-extremo marca-cero"></div>
+    <div class="marca-extremo marca-uno"></div>
 
+    <!-- referencias fijas -->
+    <div class="marca-referencia ref25"></div>
+    <div class="marca-referencia ref50"></div>
+    <div class="marca-referencia ref75"></div>
+
+    <div class="texto-referencia texto25">0,25</div>
+    <div class="texto-referencia texto50">0,5</div>
+    <div class="texto-referencia texto75">0,75</div>
+
+    <!-- cantidad actual -->
     <div class="punto-fdp"></div>
     <div class="etiqueta-fdp">{decimal_recta}</div>
 
+    <!-- extremos -->
     <div class="cero-fdp">0</div>
     <div class="uno-fdp">1</div>
+
 </div>
 """
 
