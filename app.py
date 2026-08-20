@@ -12,6 +12,14 @@ st.set_page_config(
 )
 
 # =========================================================
+# ESTADO
+# =========================================================
+
+if "cantidad" not in st.session_state:
+    st.session_state.cantidad = 50
+
+
+# =========================================================
 # ESTILOS
 # =========================================================
 
@@ -29,32 +37,6 @@ st.markdown(
         font-weight: 700;
         letter-spacing: 0.04em;
         color: #38d45a;
-    }
-
-    .representaciones {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-top: 18px;
-        margin-bottom: 18px;
-    }
-
-    .representacion {
-        border: 1px solid rgba(150, 160, 180, 0.35);
-        border-radius: 14px;
-        padding: 22px 18px;
-        text-align: center;
-    }
-
-    .representacion-titulo {
-        font-size: 0.95rem;
-        opacity: 0.72;
-        margin-bottom: 8px;
-    }
-
-    .representacion-valor {
-        font-size: 2rem;
-        font-weight: 750;
     }
 
     .cuadricula {
@@ -84,26 +66,25 @@ st.markdown(
         font-size: 0.95rem;
     }
 
+    .valor-grande {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 750;
+        padding: 8px 0 14px 0;
+    }
+
     .equivalencia {
         border: 1px solid rgba(150, 160, 180, 0.35);
         border-radius: 14px;
         padding: 18px 20px;
         margin-top: 16px;
-    }
-
-    @media (max-width: 700px) {
-        .representaciones {
-            grid-template-columns: 1fr;
-        }
-
-        .representacion-valor {
-            font-size: 1.65rem;
-        }
+        font-size: 1.1rem;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 # =========================================================
 # FUNCIONES
@@ -120,6 +101,10 @@ def fraccion_base(valor):
 def fraccion_simplificada(valor):
     fraccion = Fraction(valor, 100)
     return fraccion.numerator, fraccion.denominator
+
+
+def fijar_cantidad(valor):
+    st.session_state.cantidad = valor
 
 
 def construir_cuadricula(valor):
@@ -145,7 +130,9 @@ def construir_cuadricula(valor):
 # =========================================================
 
 st.markdown(
-    '<div class="lim-code">FDP-01 &nbsp;|&nbsp; LIM · Laboratorio de Ideas Matemáticas</div>',
+    '<div class="lim-code">'
+    'FDP-01 &nbsp;|&nbsp; LIM · Laboratorio de Ideas Matemáticas'
+    '</div>',
     unsafe_allow_html=True
 )
 
@@ -162,6 +149,7 @@ representarse de distintas maneras.
 
 st.divider()
 
+
 # =========================================================
 # MOMENTO 1 · MANIPULAR LA CANTIDAD
 # =========================================================
@@ -172,31 +160,50 @@ valor = st.slider(
     "Cantidad representada",
     min_value=0,
     max_value=100,
-    value=50,
     step=1,
+    key="cantidad",
     format="%d %%"
 )
 
-# Botones de cantidades especiales
 st.write("También podés probar algunas cantidades:")
 
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-    if st.button("25 %", use_container_width=True):
-        valor = 25
+    st.button(
+        "25 %",
+        on_click=fijar_cantidad,
+        args=(25,),
+        use_container_width=True
+    )
 
 with c2:
-    if st.button("50 %", use_container_width=True):
-        valor = 50
+    st.button(
+        "50 %",
+        on_click=fijar_cantidad,
+        args=(50,),
+        use_container_width=True
+    )
 
 with c3:
-    if st.button("75 %", use_container_width=True):
-        valor = 75
+    st.button(
+        "75 %",
+        on_click=fijar_cantidad,
+        args=(75,),
+        use_container_width=True
+    )
 
 with c4:
-    if st.button("100 %", use_container_width=True):
-        valor = 100
+    st.button(
+        "100 %",
+        on_click=fijar_cantidad,
+        args=(100,),
+        use_container_width=True
+    )
+
+# Recuperamos el valor después de cualquier interacción
+valor = st.session_state.cantidad
+
 
 # =========================================================
 # MOMENTO 2 · REPRESENTACIÓN VISUAL
@@ -207,7 +214,8 @@ st.divider()
 st.header("2. Mirá la cantidad")
 
 st.write(
-    f"Están representadas **{valor} de las 100 partes iguales** del entero."
+    f"Están representadas **{valor} de las 100 partes iguales** "
+    f"del entero."
 )
 
 st.markdown(
@@ -216,9 +224,12 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="entero-label">El cuadrado completo representa 1 entero.</div>',
+    '<div class="entero-label">'
+    'El cuadrado completo representa 1 entero.'
+    '</div>',
     unsafe_allow_html=True
 )
+
 
 # =========================================================
 # MOMENTO 3 · TRES ESCRITURAS
@@ -232,33 +243,37 @@ decimal = decimal_con_coma(valor)
 fraccion = fraccion_base(valor)
 porcentaje = f"{valor} %"
 
-st.markdown(
-    f"""
-    <div class="representaciones">
+col_frac, col_dec, col_por = st.columns(3)
 
-        <div class="representacion">
-            <div class="representacion-titulo">Fracción</div>
-            <div class="representacion-valor">{fraccion}</div>
-        </div>
+with col_frac:
+    with st.container(border=True):
+        st.caption("Fracción")
+        st.markdown(
+            f'<div class="valor-grande">{fraccion}</div>',
+            unsafe_allow_html=True
+        )
 
-        <div class="representacion">
-            <div class="representacion-titulo">Número decimal</div>
-            <div class="representacion-valor">{decimal}</div>
-        </div>
+with col_dec:
+    with st.container(border=True):
+        st.caption("Número decimal")
+        st.markdown(
+            f'<div class="valor-grande">{decimal}</div>',
+            unsafe_allow_html=True
+        )
 
-        <div class="representacion">
-            <div class="representacion-titulo">Porcentaje</div>
-            <div class="representacion-valor">{porcentaje}</div>
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+with col_por:
+    with st.container(border=True):
+        st.caption("Porcentaje")
+        st.markdown(
+            f'<div class="valor-grande">{porcentaje}</div>',
+            unsafe_allow_html=True
+        )
 
 st.info(
-    "Las tres escrituras representan la misma cantidad que se muestra en la cuadrícula."
+    "Las tres escrituras representan la misma cantidad "
+    "que se muestra en la cuadrícula."
 )
+
 
 # =========================================================
 # MOMENTO 4 · FRACCIONES EQUIVALENTES
@@ -280,16 +295,17 @@ if mostrar_equivalente:
 
     numerador, denominador = fraccion_simplificada(valor)
 
-    if denominador == 1:
+    if valor == 0:
 
-        if numerador == 0:
-            st.success(
-                f"{valor}/100 representa 0."
-            )
-        else:
-            st.success(
-                f"{valor}/100 representa {numerador} entero."
-            )
+        st.success(
+            f"{valor}/100 representa 0."
+        )
+
+    elif denominador == 1:
+
+        st.success(
+            f"{valor}/100 representa {numerador} entero."
+        )
 
     elif numerador == valor and denominador == 100:
 
@@ -301,19 +317,21 @@ if mostrar_equivalente:
     else:
 
         st.markdown(
-            f"""
-            <div class="equivalencia">
-                <strong>{valor}/100</strong>
-                &nbsp; representa la misma cantidad que &nbsp;
-                <strong>{numerador}/{denominador}</strong>.
-            </div>
-            """,
+            (
+                '<div class="equivalencia">'
+                f'<strong>{valor}/100</strong>'
+                '&nbsp;&nbsp; representa la misma cantidad que '
+                f'&nbsp;&nbsp;<strong>{numerador}/{denominador}</strong>.'
+                '</div>'
+            ),
             unsafe_allow_html=True
         )
 
         st.write(
-            "Volvé a mirar la cuadrícula: la cantidad representada no cambió."
+            "Volvé a mirar la cuadrícula: "
+            "la cantidad representada no cambió."
         )
+
 
 # =========================================================
 # CIERRE
