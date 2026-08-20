@@ -315,34 +315,91 @@ st.divider()
 st.header("4. ¿Dónde está esta cantidad entre 0 y 1?")
 
 posicion = valor
+decimal_recta = decimal_con_coma(valor)
 
-st.markdown(
-    f"""
-    <div class="recta">
+recta_html = f"""
+<style>
+.recta-fdp {{
+    position: relative;
+    width: 92%;
+    height: 90px;
+    margin: 30px auto 5px auto;
+}}
 
-        <div class="linea"></div>
+.recta-fdp .linea-fdp {{
+    position: absolute;
+    top: 26px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #888;
+    border-radius: 3px;
+}}
 
-        <div class="marca marca0"></div>
-        <div class="marca marca1"></div>
+.recta-fdp .marca-fdp {{
+    position: absolute;
+    top: 17px;
+    width: 3px;
+    height: 22px;
+    background: currentColor;
+}}
 
-        <div
-            class="punto"
-            style="left:{posicion}%;">
-        </div>
+.recta-fdp .marca-cero {{
+    left: 0;
+}}
 
-        <div
-            class="etiqueta-punto"
-            style="left:{posicion}%;">
-            {decimal}
-        </div>
+.recta-fdp .marca-uno {{
+    right: 0;
+}}
 
-        <div class="numero0">0</div>
-        <div class="numero1">1</div>
+.recta-fdp .punto-fdp {{
+    position: absolute;
+    top: 17px;
+    left: {posicion}%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #38d45a;
+    transform: translateX(-50%);
+}}
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+.recta-fdp .etiqueta-fdp {{
+    position: absolute;
+    top: 51px;
+    left: {posicion}%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    color: #38d45a;
+}}
+
+.recta-fdp .cero-fdp {{
+    position: absolute;
+    top: 50px;
+    left: 0;
+}}
+
+.recta-fdp .uno-fdp {{
+    position: absolute;
+    top: 50px;
+    right: 0;
+}}
+</style>
+
+<div class="recta-fdp">
+    <div class="linea-fdp"></div>
+
+    <div class="marca-fdp marca-cero"></div>
+    <div class="marca-fdp marca-uno"></div>
+
+    <div class="punto-fdp"></div>
+    <div class="etiqueta-fdp">{decimal_recta}</div>
+
+    <div class="cero-fdp">0</div>
+    <div class="uno-fdp">1</div>
+</div>
+"""
+
+st.html(recta_html)
 
 st.write(
     "El punto representa en la recta la misma cantidad "
