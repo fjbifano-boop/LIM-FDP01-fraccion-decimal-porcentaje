@@ -1,1 +1,28 @@
+# LIM · FDP-01 · Una cantidad, distintas escrituras
 
+Prototipo del Laboratorio de Ideas Matemáticas (LIM) para explorar
+relaciones entre fracciones, números decimales y porcentajes.
+
+## Big Idea
+
+Una fracción, un número decimal y un porcentaje pueden representar
+una misma cantidad. Al modificar esa cantidad, sus diferentes
+representaciones cambian coordinadamente.
+
+## Propósito del prototipo
+
+FDP-01 busca favorecer una exploración visual de las relaciones entre:
+
+- la parte representada de un entero;
+- la escritura fraccionaria;
+- la escritura decimal;
+- la escritura porcentual.
+
+La versión inicial utiliza una cuadrícula de 100 partes y permite
+modificar dinámicamente la cantidad representada.
+
+## Estado
+
+v0.1 · Prototipo exploratorio
+
+Forma parte de LIM · Laboratorio de Ideas Matemáticas.
