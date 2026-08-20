@@ -18,6 +18,7 @@ st.set_page_config(
 if "cantidad" not in st.session_state:
     st.session_state.cantidad = 50
 
+
 # =========================================================
 # FUNCIONES
 # =========================================================
@@ -31,15 +32,14 @@ def decimal_con_coma(valor):
 
 
 def fraccion_simplificada(valor):
-    f = Fraction(valor, 100)
-    return f.numerator, f.denominator
+    fraccion = Fraction(valor, 100)
+    return fraccion.numerator, fraccion.denominator
 
 
-def alternar_celda(numero):
+def seleccionar_desde_cuadricula(numero):
     """
-    La cuadrícula representa una cantidad continua:
-    al pulsar una celda, esa celda pasa a ser el nuevo límite
-    de la cantidad representada.
+    Al pulsar una celda, esa posición pasa a determinar
+    la cantidad representada.
     """
     st.session_state.cantidad = numero
 
@@ -73,71 +73,6 @@ st.markdown(
         padding: 7px 0 12px 0;
     }
 
-    .recta {
-        position: relative;
-        width: 92%;
-        height: 80px;
-        margin: 35px auto 10px auto;
-    }
-
-    .linea {
-        position: absolute;
-        top: 25px;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: #888;
-        border-radius: 3px;
-    }
-
-    .marca {
-        position: absolute;
-        top: 16px;
-        width: 4px;
-        height: 22px;
-        background: #ddd;
-    }
-
-    .marca0 {
-        left: 0;
-    }
-
-    .marca1 {
-        right: 0;
-    }
-
-    .punto {
-        position: absolute;
-        top: 17px;
-        width: 20px;
-        height: 20px;
-        background: #38d45a;
-        border-radius: 50%;
-        transform: translateX(-50%);
-    }
-
-    .etiqueta-punto {
-        position: absolute;
-        top: 48px;
-        transform: translateX(-50%);
-        font-weight: 700;
-        color: #38d45a;
-    }
-
-    .numero0 {
-        position: absolute;
-        top: 48px;
-        left: 0;
-        transform: translateX(-50%);
-    }
-
-    .numero1 {
-        position: absolute;
-        top: 48px;
-        right: 0;
-        transform: translateX(50%);
-    }
-
     div[data-testid="stButton"] > button {
         min-height: 42px;
     }
@@ -146,6 +81,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 # =========================================================
 # ENCABEZADO
@@ -171,8 +107,9 @@ con sus diferentes representaciones.
 
 st.divider()
 
+
 # =========================================================
-# 1. CONTROL DE LA CANTIDAD
+# 1. ELEGIR UNA CANTIDAD
 # =========================================================
 
 st.header("1. Elegí una cantidad")
@@ -226,6 +163,7 @@ valor = st.session_state.cantidad
 
 st.divider()
 
+
 # =========================================================
 # 2. CUADRÍCULA MANIPULABLE
 # =========================================================
@@ -235,9 +173,6 @@ st.header("2. También podés cambiar la cantidad desde la cuadrícula")
 st.write(
     "Tocá un cuadrado para cambiar la cantidad representada."
 )
-
-# Cuadrícula 10 x 10.
-# Cada botón representa una centésima.
 
 for fila in range(10):
 
@@ -250,15 +185,12 @@ for fila in range(10):
 
         with columnas[columna]:
 
-            if activa:
-                etiqueta = "■"
-            else:
-                etiqueta = "□"
+            etiqueta = "■" if activa else "□"
 
             st.button(
                 etiqueta,
                 key=f"celda_{numero}",
-                on_click=alternar_celda,
+                on_click=seleccionar_desde_cuadricula,
                 args=(numero,),
                 use_container_width=True,
                 type="primary" if activa else "secondary"
@@ -270,8 +202,9 @@ st.caption(
 
 st.divider()
 
+
 # =========================================================
-# 3. REPRESENTACIONES NUMÉRICAS
+# 3. TRES ESCRITURAS
 # =========================================================
 
 st.header("3. La misma cantidad, tres escrituras")
@@ -306,232 +239,270 @@ with col_por:
             unsafe_allow_html=True
         )
 
+st.info(
+    "Las tres escrituras representan la misma cantidad "
+    "que se muestra en la cuadrícula."
+)
+
 st.divider()
 
+
 # =========================================================
-# 4. RECTA NUMÉRICA
+# 4. OTRAS MANERAS DE MIRAR LA CANTIDAD
 # =========================================================
 
-st.header("4. ¿Dónde está esta cantidad entre 0 y 1?")
+st.header("4. Otras maneras de mirar esta cantidad")
 
-posicion = valor
-decimal_recta = decimal_con_coma(valor)
-
-recta_html = f"""
-<style>
-.recta-fdp {{
-    position: relative;
-    width: 92%;
-    height: 105px;
-    margin: 30px auto 5px auto;
-}}
-
-.recta-fdp .linea-fdp {{
-    position: absolute;
-    top: 26px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: #888;
-    border-radius: 3px;
-}}
-
-/* Marcas de 0 y 1 */
-.recta-fdp .marca-extremo {{
-    position: absolute;
-    top: 16px;
-    width: 3px;
-    height: 24px;
-    background: currentColor;
-}}
-
-.recta-fdp .marca-cero {{
-    left: 0;
-}}
-
-.recta-fdp .marca-uno {{
-    right: 0;
-}}
-
-/* Referencias fijas */
-.recta-fdp .marca-referencia {{
-    position: absolute;
-    top: 20px;
-    width: 2px;
-    height: 16px;
-    background: #888;
-    transform: translateX(-50%);
-}}
-
-.recta-fdp .ref25 {{
-    left: 25%;
-}}
-
-.recta-fdp .ref50 {{
-    left: 50%;
-}}
-
-.recta-fdp .ref75 {{
-    left: 75%;
-}}
-
-.recta-fdp .texto-referencia {{
-    position: absolute;
-    top: 49px;
-    transform: translateX(-50%);
-    color: #999;
-    font-size: 0.9rem;
-}}
-
-.recta-fdp .texto25 {{
-    left: 25%;
-}}
-
-.recta-fdp .texto50 {{
-    left: 50%;
-}}
-
-.recta-fdp .texto75 {{
-    left: 75%;
-}}
-
-/* Punto móvil */
-.recta-fdp .punto-fdp {{
-    position: absolute;
-    top: 17px;
-    left: {posicion}%;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #38d45a;
-    transform: translateX(-50%);
-    z-index: 2;
-}}
-
-.recta-fdp .etiqueta-fdp {{
-    position: absolute;
-    top: 76px;
-    left: {posicion}%;
-    transform: translateX(-50%);
-    font-weight: 700;
-    color: #38d45a;
-}}
-
-/* Extremos */
-.recta-fdp .cero-fdp {{
-    position: absolute;
-    top: 49px;
-    left: 0;
-}}
-
-.recta-fdp .uno-fdp {{
-    position: absolute;
-    top: 49px;
-    right: 0;
-}}
-</style>
-
-<div class="recta-fdp">
-
-    <div class="linea-fdp"></div>
-
-    <!-- extremos -->
-    <div class="marca-extremo marca-cero"></div>
-    <div class="marca-extremo marca-uno"></div>
-
-    <!-- referencias fijas -->
-    <div class="marca-referencia ref25"></div>
-    <div class="marca-referencia ref50"></div>
-    <div class="marca-referencia ref75"></div>
-
-    <div class="texto-referencia texto25">0,25</div>
-    <div class="texto-referencia texto50">0,5</div>
-    <div class="texto-referencia texto75">0,75</div>
-
-    <!-- cantidad actual -->
-    <div class="punto-fdp"></div>
-    <div class="etiqueta-fdp">{decimal_recta}</div>
-
-    <!-- extremos -->
-    <div class="cero-fdp">0</div>
-    <div class="uno-fdp">1</div>
-
-</div>
+st.write(
+    """
+Podés abrir otras representaciones y relaciones para seguir
+explorando la misma cantidad.
 """
-
-st.html(recta_html)
-
-st.write(
-    "El punto representa en la recta la misma cantidad "
-    "que aparece en la cuadrícula."
 )
 
-st.divider()
+mostrar_recta = st.checkbox(
+    "Ubicar esta cantidad en la recta numérica",
+    key="mostrar_recta"
+)
+
+mostrar_fraccion = st.checkbox(
+    "Buscar otra escritura fraccionaria",
+    key="mostrar_fraccion"
+)
+
 
 # =========================================================
-# 5. FRACCIONES EQUIVALENTES
+# RECTA NUMÉRICA OPCIONAL
 # =========================================================
 
-st.header("5. ¿Podemos escribir la fracción de otra manera?")
+if mostrar_recta:
 
-st.write(
-    f"La cuadrícula permite verla como **{valor}/100**."
-)
+    st.subheader("¿Dónde está esta cantidad entre 0 y 1?")
 
-mostrar_equivalente = st.checkbox(
-    "Buscar una fracción equivalente con números más pequeños"
-)
+    posicion = valor
+    decimal_recta = decimal_con_coma(valor)
 
-if mostrar_equivalente:
+    recta_html = f"""
+    <style>
 
-    numerador, denominador = fraccion_simplificada(valor)
+    .recta-fdp {{
+        position: relative;
+        width: 92%;
+        height: 110px;
+        margin: 30px auto 5px auto;
+    }}
 
-    if valor == 0:
+    .recta-fdp .linea-fdp {{
+        position: absolute;
+        top: 26px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #888;
+        border-radius: 3px;
+    }}
 
-        st.success("0/100 representa 0.")
+    .recta-fdp .marca-extremo {{
+        position: absolute;
+        top: 16px;
+        width: 3px;
+        height: 24px;
+        background: currentColor;
+    }}
 
-    elif denominador == 1:
+    .recta-fdp .marca-cero {{
+        left: 0;
+    }}
 
-        st.success(
-            f"{valor}/100 representa {numerador} entero."
-        )
+    .recta-fdp .marca-uno {{
+        right: 0;
+    }}
 
-    elif numerador == valor and denominador == 100:
+    .recta-fdp .marca-referencia {{
+        position: absolute;
+        top: 20px;
+        width: 2px;
+        height: 16px;
+        background: #888;
+        transform: translateX(-50%);
+    }}
 
-        st.info(
-            "En este caso no encontramos una fracción equivalente "
-            "con números enteros más pequeños."
-        )
+    .recta-fdp .ref25 {{
+        left: 25%;
+    }}
 
-    else:
+    .recta-fdp .ref50 {{
+        left: 50%;
+    }}
 
-        st.success(
-            f"{valor}/100 representa la misma cantidad que "
-            f"{numerador}/{denominador}."
-        )
+    .recta-fdp .ref75 {{
+        left: 75%;
+    }}
 
-        st.write(
-            "La escritura cambió, pero la cantidad representada "
-            "en la cuadrícula y su posición en la recta permanecen iguales."
-        )
+    .recta-fdp .texto-referencia {{
+        position: absolute;
+        top: 49px;
+        transform: translateX(-50%);
+        color: #999;
+        font-size: 0.9rem;
+    }}
 
-st.divider()
+    .recta-fdp .texto25 {{
+        left: 25%;
+    }}
+
+    .recta-fdp .texto50 {{
+        left: 50%;
+    }}
+
+    .recta-fdp .texto75 {{
+        left: 75%;
+    }}
+
+    .recta-fdp .punto-fdp {{
+        position: absolute;
+        top: 17px;
+        left: {posicion}%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #38d45a;
+        transform: translateX(-50%);
+        z-index: 2;
+    }}
+
+    .recta-fdp .etiqueta-fdp {{
+        position: absolute;
+        top: 76px;
+        left: {posicion}%;
+        transform: translateX(-50%);
+        font-weight: 700;
+        color: #38d45a;
+    }}
+
+    .recta-fdp .cero-fdp {{
+        position: absolute;
+        top: 49px;
+        left: 0;
+    }}
+
+    .recta-fdp .uno-fdp {{
+        position: absolute;
+        top: 49px;
+        right: 0;
+    }}
+
+    </style>
+
+    <div class="recta-fdp">
+
+        <div class="linea-fdp"></div>
+
+        <div class="marca-extremo marca-cero"></div>
+        <div class="marca-extremo marca-uno"></div>
+
+        <div class="marca-referencia ref25"></div>
+        <div class="marca-referencia ref50"></div>
+        <div class="marca-referencia ref75"></div>
+
+        <div class="texto-referencia texto25">0,25</div>
+        <div class="texto-referencia texto50">0,5</div>
+        <div class="texto-referencia texto75">0,75</div>
+
+        <div class="punto-fdp"></div>
+        <div class="etiqueta-fdp">{decimal_recta}</div>
+
+        <div class="cero-fdp">0</div>
+        <div class="uno-fdp">1</div>
+
+    </div>
+    """
+
+    st.html(recta_html)
+
+    st.write(
+        "El punto representa en la recta la misma cantidad "
+        "que aparece en la cuadrícula."
+    )
+
+
+# =========================================================
+# OTRA ESCRITURA FRACCIONARIA OPCIONAL
+# =========================================================
+
+if mostrar_fraccion:
+
+    st.subheader("¿Podemos escribir la fracción de otra manera?")
+
+    st.write(
+        f"La cuadrícula permite representar esta cantidad como "
+        f"**{valor}/100**."
+    )
+
+    st.write(
+        "¿Se te ocurre otra fracción que pueda representar "
+        "la misma cantidad?"
+    )
+
+    revelar_equivalente = st.checkbox(
+        "Comparar con una fracción equivalente",
+        key="revelar_equivalente"
+    )
+
+    if revelar_equivalente:
+
+        numerador, denominador = fraccion_simplificada(valor)
+
+        if valor == 0:
+
+            st.success(
+                "0/100 representa la misma cantidad que 0."
+            )
+
+        elif denominador == 1:
+
+            st.success(
+                f"{valor}/100 representa la misma cantidad que "
+                f"{numerador}."
+            )
+
+        elif numerador == valor and denominador == 100:
+
+            st.info(
+                "En este caso, la fracción ya está escrita "
+                "con los números enteros más pequeños posibles."
+            )
+
+        else:
+
+            st.success(
+                f"{valor}/100 representa la misma cantidad que "
+                f"{numerador}/{denominador}."
+            )
+
+            st.write(
+                "La escritura cambió, pero la cantidad representada "
+                "sigue siendo la misma."
+            )
+
 
 # =========================================================
 # CIERRE
 # =========================================================
+
+st.divider()
 
 st.subheader("Para seguir explorando")
 
 st.write(
     """
 Probá cambiar la cantidad desde el control y desde la cuadrícula.
-Observá cómo se modifican simultáneamente la fracción, el número
-decimal, el porcentaje y la posición en la recta.
+Observá qué cambia en sus distintas representaciones y qué
+relaciones permanecen.
 """
 )
 
 st.caption(
     "FDP-01 · Una cantidad, distintas representaciones · "
-    "LIM – Laboratorio de Ideas Matemáticas · v0.2"
+    "LIM – Laboratorio de Ideas Matemáticas · v0.3"
 )
